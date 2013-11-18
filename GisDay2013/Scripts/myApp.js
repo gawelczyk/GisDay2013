@@ -218,6 +218,7 @@ MyApp.GoogleSubmitAction = function (form) {
                              success: { label: "Success!", className: "btn-success" }
                          }
                      });
+                     MyApp.Markers.removeAllFeatures();
                      setTimeout(function () {
                          MyApp.ReloadVector();
                      }, 2500);
