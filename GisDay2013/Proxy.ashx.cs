@@ -146,7 +146,7 @@ namespace CoverageWebApp
             }
             catch (System.Net.WebException webExc)
             {
-                response.StatusCode = 500;
+                response.StatusCode = 530;
                 var r = webExc.Response as HttpWebResponse;
                 if (r != null)
                 {
@@ -156,6 +156,12 @@ namespace CoverageWebApp
                 response.StatusDescription = webExc.Status.ToString();
                 RewriteResponse(response, webExc.Response);
                 //response.Write(webExc.Response.GetResponseStream());
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine(ex.Message);
+                response.StatusCode = 531;
+                response.StatusDescription = ex.Message;
             }
             return serverResponse;
         }

@@ -81,33 +81,11 @@ MyApp.ReloadVector = function () {
       });
 }
 
-function LoadGoogleFeatures(root) {
-    console.log("LoadGoogleFeatures");
-    var feed = root.feed;
-    var entries = feed.entry || [];
-    var features = new Array();
-
-    for (var i = 0; i < entries.length; ++i) {
-        var entry = entries[i];
-        console.log(entry.content.$t);
-        var attr = entry.content.$t.split(",");
-        var feature = new Object();
-        for (var j = 0; j < attr.length; j++) {
-            var pp = attr[j].split(":");
-            feature[pp[0].trim()] = pp[1].trim();
-        }
-        features.push(feature);
-    }
-    MyApp.RawFeatures = features;
-}
-
-
-$(function () {
-    init();
-
-    $("#google-form").submit(function () {
+MyApp.GoogleSubmitAction = function (form) {
+    console.log("submit action set");
+    form.submit(function () {
         try {
-            var url1 = $(this).attr("action");
+            var url1 = form.attr("action");
             console.log(url1);
 
             $.ajax({
@@ -154,7 +132,6 @@ $(function () {
                      }
                  });
              });
-
         } catch (e) {
             console.log(e);
             bootbox.dialog({
@@ -166,5 +143,31 @@ $(function () {
         }
         return false;
     });
+}
 
+
+function LoadGoogleFeatures(root) {
+    console.log("LoadGoogleFeatures");
+    var feed = root.feed;
+    var entries = feed.entry || [];
+    var features = new Array();
+
+    for (var i = 0; i < entries.length; ++i) {
+        var entry = entries[i];
+        console.log(entry.content.$t);
+        var attr = entry.content.$t.split(",");
+        var feature = new Object();
+        for (var j = 0; j < attr.length; j++) {
+            var pp = attr[j].split(":");
+            feature[pp[0].trim()] = pp[1].trim();
+        }
+        features.push(feature);
+    }
+    MyApp.RawFeatures = features;
+}
+
+
+$(function () {
+    init();
+    MyApp.GoogleSubmitAction($("#google-form"));
 });
