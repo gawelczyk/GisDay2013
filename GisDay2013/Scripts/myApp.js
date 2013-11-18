@@ -15,7 +15,6 @@ function init() {
     layer = new OpenLayers.Layer.OSM("Simple OSM Map");
 
     map.addLayer(layer);
-
     map.addControl(new OpenLayers.Control.MousePosition());
 
     MyApp.Vector = new OpenLayers.Layer.Vector("POI", {
@@ -39,8 +38,9 @@ function init() {
     //, { projection: "EPSG:4326" }
     MyApp.LoadVector();
     console.log(MyApp.Vector);
-    map.addLayer(MyApp.Vector);
-    console.log(MyApp.Vector);
+
+    MyApp.LoadMarkerLayer();
+
     map.zoomToMaxExtent();
 }
 
@@ -58,6 +58,7 @@ MyApp.LoadVector = function () {
         MyApp.Vector.addFeatures(gg);
         //MyApp.Vector.refresh({ force: true });
     }
+    map.addLayer(MyApp.Vector);
 }
 
 MyApp.ReloadVector = function () {
@@ -80,6 +81,108 @@ MyApp.ReloadVector = function () {
           });
       });
 }
+
+MyApp.LoadMarkerLayer = function () {
+    var eg = 'http://www.openlayers.org/dev/img/marker.png';
+
+    var calculateOffset = function (size) {
+        return new OpenLayers.Pixel(-(size.w / 2), -size.h);
+    };
+
+    var size = new OpenLayers.Size(21, 25);
+    var offset = calculateOffset(size);
+
+    var setLonLat = function (feature) {
+        var g = feature.geometry.clone();
+        g.transform(map.getProjectionObject(), new OpenLayers.Projection("EPSG:4326"));
+        $("#lon").val(g.x.toFixed(4));
+        $("#lat").val(g.y.toFixed(4));
+    };
+
+    MyApp.Markers = new OpenLayers.Layer.Vector("Marker", {
+        //projection: new OpenLayers.Projection("EPSG:4326"), //map.getProjectionObject(),
+        //strategies: [new OpenLayers.Strategy.Fixed()],
+        //preFeatureInsert: function (feature) {
+        //},
+        //onFeatureInsert: function (feature) {            
+        //    setLonLat(feature);
+        //},
+        styleMap: new OpenLayers.StyleMap({
+            temporary: OpenLayers.Util.applyDefaults({
+                externalGraphic: eg,
+                graphicWidth: size.w,
+                graphicHeight: size.h,
+                graphicXOffset: offset.x,
+                graphicYOffset: offset.y
+            }, OpenLayers.Feature.Vector.style.temporary),
+            'default': OpenLayers.Util.applyDefaults({
+                strokeOpacity: 1,
+                fillOpacity: 1,
+                externalGraphic: eg,
+                graphicWidth: size.w,
+                graphicHeight: size.h,
+                graphicXOffset: offset.x,
+                graphicYOffset: offset.y
+            }, OpenLayers.Feature.Vector.style['default']),
+            select: OpenLayers.Util.applyDefaults({
+                externalGraphic: eg,
+                graphicWidth: size.w,
+                graphicHeight: size.h,
+                graphicXOffset: offset.x,
+                graphicYOffset: offset.y
+            }, OpenLayers.Feature.Vector.style.select)
+        })
+    });
+
+    MyApp.Markers.events.register("featuremodified", MyApp.Markers, function (evt) {
+        console.log(evt);
+        setLonLat(evt.feature);
+        //OpenLayers.Event.stop(evt);
+    });
+
+    MyApp.Markers.events.register("beforefeatureadded", MyApp.Markers, function (evt) {
+        console.log(evt.feature);
+        console.log(MyApp.Markers.features.length);
+        if (MyApp.Markers.features.length > 0) {
+            MyApp.Markers.removeAllFeatures({ siletn: false });
+        }
+        setLonLat(evt.feature);
+    });
+
+    map.addLayer(MyApp.Markers);
+    map.addControl(MyApp.CreateEditPanel(MyApp.Markers));
+}
+
+MyApp.CreateEditPanel = function (layer) {
+    var toolbar = new OpenLayers.Control.Panel({
+        displayClass: 'olControlEditingToolbar'
+    });
+
+    toolbar.addControls([
+        // this control is just there to be able to deactivate the drawing
+        // tools
+        new OpenLayers.Control({
+            displayClass: 'olControlNavigation'
+        }),
+        new OpenLayers.Control.ModifyFeature(layer, {
+            vertexRenderIntent: 'temporary',
+            displayClass: 'olControlModifyFeature'
+        }),
+        new OpenLayers.Control.DrawFeature(layer, OpenLayers.Handler.Point, {
+            displayClass: 'olControlDrawFeaturePoint'
+        })//,
+        //new OpenLayers.Control.DrawFeature(vector, OpenLayers.Handler.Path, {
+        //    displayClass: 'olControlDrawFeaturePath'
+        //}),
+        //new OpenLayers.Control.DrawFeature(vector, OpenLayers.Handler.Polygon, {
+        //    displayClass: 'olControlDrawFeaturePolygon'
+        //})
+    ]);
+
+    return toolbar;
+
+}
+
 
 MyApp.GoogleSubmitAction = function (form) {
     console.log("submit action set");
