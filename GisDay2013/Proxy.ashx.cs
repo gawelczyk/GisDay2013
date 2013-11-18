@@ -13,7 +13,7 @@ namespace CoverageWebApp
     /// </summary>
     public class Proxy : IHttpHandler
     {
-                
+
         public void ProcessRequest(HttpContext context)
         {
             HttpResponse response = context.Response;
@@ -68,22 +68,29 @@ namespace CoverageWebApp
 
         private void AddPostToRequest(HttpRequest orgReq, HttpWebRequest req)
         {
-            var bytes = new byte[orgReq.InputStream.Length];
-            orgReq.InputStream.Read(bytes, 0, (int)orgReq.InputStream.Length);
-            req.ContentLength = bytes.Length;
+            try
+            {
+                var bytes = new byte[orgReq.InputStream.Length];
+                orgReq.InputStream.Read(bytes, 0, (int)orgReq.InputStream.Length);
+                req.ContentLength = bytes.Length;
 
-            string ctype = orgReq.ContentType;
-            if (String.IsNullOrEmpty(ctype))
-            {
-                req.ContentType = "application/x-www-form-urlencoded";
+                string ctype = orgReq.ContentType;
+                if (String.IsNullOrEmpty(ctype))
+                {
+                    req.ContentType = "application/x-www-form-urlencoded";
+                }
+                else
+                {
+                    req.ContentType = ctype;
+                }
+                using (Stream outputStream = req.GetRequestStream())
+                {
+                    outputStream.Write(bytes, 0, bytes.Length);
+                }
             }
-            else
+            catch (Exception ex)
             {
-                req.ContentType = ctype;
-            }
-            using (Stream outputStream = req.GetRequestStream())
-            {
-                outputStream.Write(bytes, 0, bytes.Length);
+                Debug.Print(ex.Message);
             }
         }
 
@@ -174,7 +181,7 @@ namespace CoverageWebApp
                     {
                         // Binary response (image, lyr file, other binary file)
                         BinaryReader br = new BinaryReader(byteStream);
-                        byte[] outb = br.ReadBytes((int) webResponse.ContentLength);
+                        byte[] outb = br.ReadBytes((int)webResponse.ContentLength);
                         br.Close();
 
                         // Tell client not to cache the image since it's dynamic
