@@ -9,3 +9,6 @@ Przykład aplikacji webowej korzystającej z OpenLayers i Google Spreadsheet jak
 Aplikacja pozwala na wprowadzanie danych punktowych z wykorzystaniem mapy lub formularza. Wprowadzone informacje 
 są zapisywane w Google Docs Spreadsheet.
 
+Prezentacja z warsztatów:
+
+https://github.com/gawelczyk/GisDay2013/wiki
