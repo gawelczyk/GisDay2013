@@ -13,9 +13,12 @@ Prezentacja z warsztatów:
 
 https://github.com/gawelczyk/GisDay2013/wiki
 
+Kilka przydatnych linków
 
-Działająca aplikacja:
-
-http://gisday2013.azurewebsites.net/
+Działająca aplikacja: http://gisday2013.azurewebsites.net/
 
 Aplikację będę musiał wyłączyć w pewnym momencie bo działą na koncie deweloperskim i nie chciał bym być zmuszony do opłat za hosting.
+
+Wyniki dostępne ze strony Googla: https://docs.google.com/spreadsheet/ccc?key=0AqqhS68oSTV5dDlCWlRPUnNSalNvRUpFMWNZTUtqRGc#gid=5
+
+Oryginalna forma do wprowadzania danych: https://docs.google.com/forms/d/1n_lwaAhZ2a94GqGIy-HGYXf0VWZuaFthWQYl1h4l5iM/viewform
