@@ -12,3 +12,10 @@ są zapisywane w Google Docs Spreadsheet.
 Prezentacja z warsztatów:
 
 https://github.com/gawelczyk/GisDay2013/wiki
+
+
+Działająca aplikacja:
+
+http://gisday2013.azurewebsites.net/
+
+Aplikację będę musiał wyłączyć w pewnym momencie bo działą na koncie deweloperskim i nie chciał bym być zmuszony do opłat za hosting.
